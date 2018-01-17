@@ -1,8 +1,10 @@
 const assert = require('assert');
 const ganache = require('ganache-cli');
 const Web3 = require('web3');
-const web3 = new Web3(ganache.provider());
-//rinkeyby provider
+ 
+const provider = ganache.provider();
+const web3 = new Web3(provider);
+//rinkeyby provider or other providers
 
 const { interface, bytecode } = require('../compile');
 
@@ -16,7 +18,7 @@ beforeEach(async () => {
   accounts = await web3.eth.getAccounts()
 
   inbox = await new web3.eth.Contract(JSON.parse(interface))
-    .deploy({ data: bytecode, arguments:[' Hi there!'] })
+    .deploy({ data: bytecode, arguments:['Hi there!'] })
     .send({ from: accounts[0], gas: '1000000' })
 
     inbox.setProvider(provider);
@@ -35,6 +37,8 @@ describe('should list accounts', () => {
   })
 
   it('has a default message', async () => {
+    //first one is method, any arguments this might require
+    //second one is call() used to customize transaction sent out to network/ who will pay? how much gas to use
     const message = await inbox.methods.message().call();
     assert.equal(message, 'Hi there!');
   });
