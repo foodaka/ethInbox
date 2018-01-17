@@ -39,9 +39,17 @@ describe('should list accounts', () => {
   it('has a default message', async () => {
     //first one is method, any arguments this might require
     //second one is call() used to customize transaction sent out to network/ who will pay? how much gas to use
+    // call is a read only operation
     const message = await inbox.methods.message().call();
     assert.equal(message, 'Hi there!');
   });
+
+  it('should change the message', async () => {
+    const newMessaage = await inbox.methods.setMessage('bye').send({ from: accounts[0] });
+    //check if the new message was set properly
+    const message = await inbox.methods.message().call();
+    assert.equal(message, 'bye')
+  })
 })
 
 // class Car {
